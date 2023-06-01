@@ -1,0 +1,14 @@
+{
+	"image_to_process": "/home/nico/Documents/nico/Études/N7/Stages/Protenga/Weighing machine/Larvae video stream/Phone - Conveyor belt/fifi_phone_green_tray_slider_22-05/clear_pict/1684750088483_cropped.jpg",
+	"classifier_model_file": "/home/nico/Documents/prog/protenga/larvae_detection/svm_binary_classifier/classifier_green_slider.pkl",
+	"hog_algo_params": {
+		"cell_size": 8,
+		"block_cell_side": 2,
+		"histogram_size": 9
+	},
+	"parameters":{
+		"window_size": 320,
+		"window_step_x": 160,
+		"window_step_y": 160
+	}
+}
