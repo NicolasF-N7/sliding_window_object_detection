@@ -26,28 +26,39 @@ def slidingWindows(image, classifier, windowSize, windowStepX, windowStepY, HOGC
     greyImg = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
     [imgHeight, imgWidth] = greyImg.shape
     outputMask = np.zeros(greyImg.shape)
-    heatmap = np.zeros(greyImg.shape)
+    #heatmap = np.zeros(greyImg.shape)
+
 
     # First iterating to get all the image windows
+    windowsList = list()
     # The position of the window is the coordinate of the upper left corner
     for windowYPos in range(1, imgHeight-windowSize+1, windowStepY):
         for windowXPos in range(1, imgWidth-windowSize+1, windowStepX):
             # Attribute a class to the window with classifier model
             window = greyImg[windowYPos:windowYPos+windowSize,windowXPos:windowXPos+windowSize]
-
+            
             # Get HOG features vector
             features = getHOGFeatures(window, HOGCellSize, HOGHistoSize, HOGBlockCellSide)
+            #windowClass = 0
             windowClass = classifier.predict([features])
             if windowClass == 1:
                 print("Larva detected at " + str([windowYPos,windowXPos]))
                 
-                bottomLeftCorner = [min(windowYPos+windowSize, imgWidth), windowXPos]
+                #bottomLeftCorner = [min(windowYPos+windowSize, imgWidth), windowXPos]
                 bottomRightCorner = [min(windowYPos+windowSize, imgHeight), min(windowXPos+windowSize, imgWidth)]
-                topRightCorner = [windowYPos, min(windowXPos+windowSize, imgWidth)]
-                topLeftCorner = [windowYPos,windowXPos]
+                #topRightCorner = [windowYPos, min(windowXPos+windowSize, imgWidth)]
+                #topLeftCorner = [windowYPos,windowXPos]
                 # Filled in rectangle
-                outputMask[windowYPos:bottomRightCorner[0], windowXPos:bottomRightCorner[0]] = 255
-                heatmap[windowYPos:bottomRightCorner[0], windowXPos:bottomRightCorner[0]] = heatmap[windowYPos:bottomRightCorner[0], windowXPos:bottomRightCorner[0]]+1
+                outputMask[windowYPos:bottomRightCorner[0], windowXPos:bottomRightCorner[1]] = 255
+                #heatmap[windowYPos:bottomRightCorner[0], windowXPos:bottomRightCorner[0]] = heatmap[windowYPos:bottomRightCorner[0], windowXPos:bottomRightCorner[0]]+1
+                #cv.putText(window, "LARVA", (80, 80), cv.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 3)
+           
+            # display window
+            #cv.imshow("Display", window)
+            #cv.waitKey(1)
+
+    # Compute HOG features for each window. Paralellized computation
+    
 
     # Normalize heatmap from 0 to max to 0 to 255
     # normalizedHeatmap = cv.normalize(heatmap, None, 0, 255, cv.NORM_MINMAX, dtype=np.uint8)
@@ -85,6 +96,7 @@ def main():
     # Load image
     image = cv.imread(imageToProcessPath)
     print("Image shape: " + str(image.shape))
+    
 
     # ------Run sliding windows------
     startTime = time.time()
@@ -106,7 +118,7 @@ def main():
 
     cv.namedWindow("Display", cv.WINDOW_NORMAL)
     cv.setWindowProperty('Display ', cv.WND_PROP_FULLSCREEN, cv.WINDOW_FULLSCREEN)
-    cv.imshow("Display", windowsMask)
+    cv.imshow("Display", larvaeHighligthedImage)
 
 
 # main
